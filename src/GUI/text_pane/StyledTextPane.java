@@ -9,7 +9,10 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.AttributeSet;
 import java.awt.Color;
 
-
+/*
+ * Implementación concreta de AbstractTextPane que utiliza un JTextPane como componente de texto.
+ * Ofrece funcionalidades adicionales para trabajar con estilos y documentos de texto con formato.
+ */
 public class StyledTextPane extends AbstractTextPane {
     private StyledDocument textStyledDoc;
     private Style defaultStyle;
