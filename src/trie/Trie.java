@@ -1,5 +1,6 @@
 package trie;
 
+import containers.Queue;
 import containers.SortedList;
 import sources.LetterKey;
 import sources.nodes.TrieNode;
@@ -203,6 +204,90 @@ public class Trie {
             }
             // Si ninguna de las condiciones anteriores fue verdadera, entonces no encontró la palabra
             return false;
+        }
+    }
+
+    public String[] suggestWords(String word) {
+        if(isEmpty()) return new String[] {};
+        verifyString(word);
+
+        word = word.toLowerCase();
+        TrieNode currentNode = this.root;
+        int pos;
+
+        // Recorre el árbol buscando letra por letra de la palabra ('word'), hasta obtener el nodo (no hoja) que
+        // contiene su última letra, para luego hacer un recorrido en profundidad a partir de ese nodo.
+        for (int i = 0; i < word.length(); i++) {
+            if(currentNode.isLeaf()) {
+                // Si el nodo es una hoja, quiere decir que no se pudo encontrar el nodo no hoja y devuelve
+                // una sugerencia compuesta el prefijo de la palabra ('word') y el sufijo del nodo hoja.
+                return new String[] {word.substring(0, i) + ((TrieLeaf)currentNode).getSuffix()};
+            }
+
+            // Obtiene el listado de letras del nodo (no hoja) actual, y se busca en él la letra de
+            // la posición i-esima de la palabra ('word').
+            SortedList<LetterKey> letters = ((TrieNonLeaf) currentNode).getLetters();
+            pos = letters.indexOf(new LetterKey(word.charAt(i)));
+
+            // Se verifica que la letra fue encontrada
+            if(pos != SortedList.NOT_FOUND) {
+                LetterKey letter = letters.getElement(pos);
+
+                // Se verifica que el nodo hijo no sea vacío para continuar con su camino
+                if(letter.getChild() != null) {
+                    currentNode = letter.getChild();
+                    continue;
+                }
+            }
+            // Si ninguna de las condiciones anteriores fue verdadera, entonces no encontró el nodo y retorna la lista vacía
+            return new String[] {};
+        }
+
+        Queue<String> suggestions = new Queue<String>();
+        // Hago un recorrido en profundidad a partir del nodo que contiene el prefijo completo
+        DFS(currentNode, suggestions, word);
+        // Guardo todos los elementos en un array
+        String[] suggestedWords = new String[suggestions.size()];
+        int i = 0;
+        while(!suggestions.isEmpty()) {
+            suggestedWords[i] = suggestions.pull();
+            i++;
+        }
+        return suggestedWords;
+    }
+
+    private void DFS(TrieNode node, Queue<String> suggestions, String prefix) {
+        /*
+        DEPTH-FIRST SEARCH
+
+        Recorre en profundidad a partir del nodo recibido por parámetro.
+        Va agregando las palabras en las sugerencias, basándose en el prefijo recibido por parámetro.
+
+        1) Si el nodo está vacío, agrega el prefijo (palabra completa) a las sugerencias.
+        2) Si el nodo es una hoja, agrega el prefijo + sufijo del nodo.
+        3) Si el nodo no es una hoja:
+             Verifico si es fin de palabra y agrego el prefijo (palabra completa) a las sugerencias.
+             Por cada una de las letras hago una llamada recursiva con su nodo hijo y el prefijo + letra
+        */
+        if(node == null)
+            suggestions.push(prefix);
+
+        else if (node.isLeaf())
+            suggestions.push(prefix + ((TrieLeaf) node).getSuffix());
+
+        else {
+            TrieNonLeaf temp = (TrieNonLeaf) node;
+
+            if (temp.isEndOfWord())
+                suggestions.push(prefix);
+
+            SortedList<LetterKey> letters = temp.getLetters();
+            for (int i = 0; i < letters.size(); i++) {
+                LetterKey letter = letters.getElement(i);
+                String newPrefix = prefix + letter.getLetter();
+
+                DFS(letter.getChild(), suggestions, newPrefix);
+            }
         }
     }
 }

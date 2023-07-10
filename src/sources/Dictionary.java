@@ -57,7 +57,6 @@ public class Dictionary {
     }
 
     public String[] suggestWords(String word) {
-        // Completar un método para el Trie que me permita devolver un listado de palabras incorrectas
-        return null;
+        return this.correctWords.suggestWords(word);
     }
 }
