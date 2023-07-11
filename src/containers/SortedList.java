@@ -19,9 +19,9 @@ public class SortedList<T extends Comparable<T>> implements Operations, Iterable
 
         if(elements == null)
             throw new NullPointerException("No es posible crear la lista porque \"elements\" es nulo");
-        else
-            for(T element: elements)
-                add(element);
+
+        for(T element: elements)
+            add(element);
     }
 
     @Override
@@ -41,6 +41,7 @@ public class SortedList<T extends Comparable<T>> implements Operations, Iterable
     }
 
     public void add(T element) {
+        if(element == null) throw new NullPointerException("El elemento no puede ser nulo");
         // Si está vacía, lo inserto al principio y al final
         if(isEmpty())
             this.first = this.last = new DoubleNode<T>(element);
@@ -112,6 +113,7 @@ public class SortedList<T extends Comparable<T>> implements Operations, Iterable
     }
 
     public boolean remove(T element) {
+        if(element == null) throw new NullPointerException("El elemento no puede ser nulo");
         DoubleNode<T> prev = null, curr = this.first;
 
         while(curr != null && element.compareTo(curr.getNodeInfo()) != 0) {
@@ -148,8 +150,8 @@ public class SortedList<T extends Comparable<T>> implements Operations, Iterable
     }
 
     public int indexOf(T element) {
-        if(isEmpty())
-            return NOT_FOUND;
+        if(element == null) throw new NullPointerException("El elemento no puede ser nulo");
+        if(isEmpty()) return NOT_FOUND;
 
         DoubleNode<T> temp = this.first;
         int index = 0;
