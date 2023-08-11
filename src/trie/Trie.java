@@ -207,6 +207,25 @@ public class Trie {
         }
     }
 
+    public String[] getAllWords() {
+        String[] words;
+        if(!isEmpty()) {
+            Queue<String> wordsQueue = new Queue<String>();
+            DFS(this.root, wordsQueue, "");
+
+            words = new String[wordsQueue.size()];
+            int i = 0;
+            while(!wordsQueue.isEmpty()) {
+                words[i] = wordsQueue.pull();
+                i++;
+            }
+        }
+        else
+            words = new String[] {};
+
+        return words;
+    }
+
     public String[] suggestWords(String word) {
         if(isEmpty()) return new String[] {};
         verifyString(word);
