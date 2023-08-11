@@ -3,44 +3,26 @@ package sources;
 import trie.Trie;
 
 public class Dictionary {
-    private Trie correctWords;
-    private Trie ignoredWords;
+    private Trie words;
 
     public Dictionary() {
-        this.correctWords = new Trie();
-        this.ignoredWords = new Trie();
+        this.words = new Trie();
     }
 
     public boolean isEmpty() {
-        return this.correctWords.isEmpty();
+        return this.words.isEmpty();
     }
 
-    public void cleanCorrect() {
-        this.correctWords.clean();
-    }
-
-    public void cleanIgnored() {
-        this.ignoredWords.clean();
+    public void clean() {
+        this.words.clean();
     }
 
     public void addWord(String word) {
-        this.correctWords.add(word);
-    }
-
-    public void ignoreWord(String word) {
-        this.ignoredWords.add(word);
+        this.words.add(word);
     }
 
     public boolean contains(String word) {
-        return wellWriten(word) || isIgnored(word) || isNumeric(word);
-    }
-
-    public boolean wellWriten(String word) {
-        return this.correctWords.contains(word);
-    }
-
-    public boolean isIgnored(String word) {
-        return this.ignoredWords.contains(word);
+        return this.words.contains(word);
     }
 
     public boolean isNumeric(String word) {
@@ -56,7 +38,11 @@ public class Dictionary {
         return flag;
     }
 
+    public String[] getAllWords() {
+        return this.words.getAllWords();
+    }
+
     public String[] suggestWords(String word) {
-        return this.correctWords.suggestWords(word);
+        return this.words.suggestWords(word);
     }
 }
