@@ -52,7 +52,7 @@ public class TextAnalyzerPane extends StyledTextPane {
         // Se analizan cada una de las palabras obtenidas del texto.
         // Se verifica que la palabra no esté bien escrita y se la agrega a la cola de palabras incorrectas.
         for(String word: words) {
-            if(!word.isBlank() && !this.dictionary.contains(word))
+            if(!word.isBlank() && !this.dictionary.isNumeric(word) && !this.dictionary.contains(word))
                 this.wrongWords.push(word);
         }
     }
