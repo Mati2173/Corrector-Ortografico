@@ -15,13 +15,14 @@ import java.awt.Color;
  */
 public class TextAnalyzerPane extends StyledTextPane {
     private Style wrongWordsStyle;
-    private Dictionary dictionary;
+    private Dictionary dictionary, ignoredWords;
     private Queue<String> wrongWords;
     private int beginIndex;
 
-    public TextAnalyzerPane(Dictionary dictionary) {
+    public TextAnalyzerPane(Dictionary dictionary, Dictionary ignoredWords) {
         super();
         this.dictionary = dictionary;
+        this.ignoredWords = ignoredWords;
         this.wrongWords = new Queue<String>();
         this.beginIndex = 0;
         this.wrongWordsStyle = addSyle("Wrong word", getDefaultStyle());
@@ -50,10 +51,10 @@ public class TextAnalyzerPane extends StyledTextPane {
         String[] words = getText().split("[\\p{Punct}¿¡\\s]+");
 
         // Se analizan cada una de las palabras obtenidas del texto.
-        // Se verifica que la palabra no esté bien escrita y se la agrega a la cola de palabras incorrectas.
+        // Se verifica que la palabra no esté bien escrita o ignorada y se la agrega a la cola de palabras incorrectas.
         for(String word: words) {
-            if(!word.isBlank() && !this.dictionary.isNumeric(word) && !this.dictionary.contains(word))
-                this.wrongWords.push(word);
+            if(!word.isBlank() && !this.dictionary.isNumeric(word) && !this.dictionary.contains(word) && !this.ignoredWords.contains(word))
+                    this.wrongWords.push(word);
         }
     }
 

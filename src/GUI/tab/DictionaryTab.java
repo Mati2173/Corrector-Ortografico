@@ -37,10 +37,10 @@ public class DictionaryTab extends JPanel {
     private String correctWordsFilePath, ignoredWordsFilePath;
     private FileManager fileManager;
 
-    public DictionaryTab(Dictionary dictionary) {
+    public DictionaryTab(Dictionary dictionary, Dictionary ignoredWords) {
         super();
         this.dictionary = dictionary;
-        this.ignoredWords = null;
+        this.ignoredWords = ignoredWords;
 
         createTopPanel();
         createCenterPanel();
@@ -160,18 +160,20 @@ public class DictionaryTab extends JPanel {
         try {
             this.fileManager.openReader(file);
 
-            String line;
-            while ((line = this.fileManager.readFileLine()) != null) {
-                String[] words = line.split("[\\p{Punct}¿¡\\s]+");
-                for(String word: words)
-                    if(!word.isBlank() && !d.isNumeric(word))
-                        d.addWord(word);
-            }
-
             if(dest == this.correctTxtPane)
                 cleanCorrect();
             else
                 cleanIgnored();
+
+            String line;
+            while ((line = this.fileManager.readFileLine()) != null) {
+                String[] words = line.split("[\\p{Punct}¿¡\\s]+");
+                for(String word: words)
+                    if(!word.isBlank() && !d.isNumeric(word)) {
+                        d.addWord(word);
+                    }
+            }
+
 
             for(String word: d.getAllWords())
                 dest.writeLine(word);
@@ -212,7 +214,7 @@ public class DictionaryTab extends JPanel {
     private class OpenTxtListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            fileManager.chooseFile("Archivos de texto (*.txt)");
+            fileManager.chooseFile("Archivos de texto (*.txt)", "txt");
 
             if(!fileManager.containsFile())
               return;
